@@ -148,7 +148,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-green-500 font-mono p-4 selection:bg-green-900 selection:text-white pb-24">
+    <div className="min-h-screen bg-neutral-950 text-green-400 font-mono p-4 selection:bg-green-900 selection:text-white pb-24">
       {/* SCANLINE OVERLAY */}
       <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-50 bg-[length:100%_4px,3px_100%]"></div>
       
@@ -198,7 +198,7 @@ function App() {
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    <div className="bg-green-900/10 border border-green-800 p-6 rounded-lg backdrop-blur-sm">
+                    <div className="bg-neutral-900/80 border border-green-700/50 shadow-md p-6 rounded-lg backdrop-blur-sm">
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-sm opacity-75 flex gap-2"><Terminal size={18} /> STATUS</span>
                             <Activity size={18} className="animate-pulse text-green-400"/>
@@ -207,7 +207,7 @@ function App() {
                     </div>
 
                     {/* ACTION BOX - "WHO LET THE DOGS OUT" EDITION */}
-                    <div className="bg-green-900/10 border border-green-800 p-6 rounded-lg backdrop-blur-sm flex items-center relative overflow-hidden group">
+                    <div className="bg-neutral-900/80 border border-green-700/50 shadow-md p-6 rounded-lg backdrop-blur-sm flex items-center relative overflow-hidden group">
                         {/* Background Pulse Effect */}
                         <div className={`absolute inset-0 bg-red-900/20 transition-opacity duration-500 ${loading ? 'opacity-100 animate-pulse' : 'opacity-0'}`}></div>
                         
@@ -287,7 +287,7 @@ function App() {
                         </div>
                     ) : (
                         intel.map((deal, idx) => (
-                        <a key={idx} href={deal.url} target="_blank" rel="noreferrer" className="block group bg-green-900/5 border border-green-800/50 hover:border-green-400 hover:bg-green-900/20 transition-all rounded-lg overflow-hidden relative">
+                        <a key={idx} href={deal.url} target="_blank" rel="noreferrer" className="block group bg-neutral-900 border border-green-800 hover:border-green-400 shadow-lg hover:border-green-400 hover:bg-green-900/20 transition-all rounded-lg overflow-hidden relative">
                             <div className="flex flex-row h-28">
                                 <div className="w-28 h-full bg-black relative shrink-0">
                                     {deal.image ? (
@@ -333,7 +333,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {SPONSOR_DATA.map((ad) => (
-                      <div key={ad.id} className={`bg-black/80 border ${ad.border} p-6 rounded-lg relative overflow-hidden group hover:bg-gray-900 transition-all hover:scale-[1.02] cursor-pointer`}>
+                      <div key={ad.id} className={`bg-neutral-900 border ${ad.border} p-6 rounded-lg relative overflow-hidden group hover:bg-gray-900 transition-all hover:scale-[1.02] cursor-pointer`}>
                           <div className="absolute top-0 right-0 bg-gray-800 text-gray-400 text-[9px] px-2 py-1 font-bold">{ad.category}</div>
                           <Cpu size={32} className={`mb-4 ${ad.color}`} />
                           <h3 className={`text-2xl font-black mb-2 ${ad.color}`}>{ad.brand}</h3>
@@ -357,7 +357,7 @@ function App() {
       )}
 
       {/* FOOTER */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-black/90 border-t border-green-900/50 py-2 px-4 backdrop-blur text-center text-[10px] text-green-800 flex justify-between items-center z-50">
+      <footer className="fixed bottom-0 left-0 right-0 bg-neutral-950/90 border-t border-green-900/50 py-2 px-4 backdrop-blur text-center text-[10px] text-green-800 flex justify-between items-center z-50">
             <div>CYBERHOUND OS v3.3 // {currentView} MODE</div>
             <div className="flex gap-4">
                 <a href="mailto:cyberhoundog@gmail.com" className="hover:text-green-400">ENCRYPTED COMMS</a>
@@ -368,4 +368,5 @@ function App() {
 }
 
 export default App;
+
 
