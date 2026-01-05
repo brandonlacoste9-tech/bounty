@@ -114,7 +114,7 @@ function App() {
     setLoading(true);
     setStatus('ESTABLISHING NEURAL LINK...');
     try {
-      const response = await fetch(${API_URL}/latest_deals.json);
+      const response = await fetch(`${API_URL}/latest_deals.json`);
       const data = await response.json();
       // Handle potential data wrappers
       const deals = Array.isArray(data) ? data : (data.extracted_intel || []); 
@@ -130,11 +130,11 @@ function App() {
 
   const triggerScan = async (target = "appsumo") => {
     setLoading(true);
-    setStatus(SCANNING SECTOR: ...);
+    setStatus(`SCANNING SECTOR: ${target.toUpperCase()}...`);
     try {
-      const response = await fetch(${API_URL}/api/scan?target=, { method: 'POST' });
+      const response = await fetch(`${API_URL}/api/scan?target=${target}`, { method: 'POST' });
       const data = await response.json();
-      setStatus(SCAN COMPLETE:  TARGETS FOUND);
+      setStatus(`SCAN COMPLETE: ${data.intel_count || 0} TARGETS FOUND`);
       fetchIntel(); 
     } catch (error) {
         setStatus('SCAN FAILED');
@@ -162,13 +162,13 @@ function App() {
           <div className="flex bg-green-900/20 rounded p-1 gap-2">
               <button 
                 onClick={() => setCurrentView('COMMAND')}
-                className={lex items-center gap-2 px-4 py-2 rounded text-xs font-bold transition-all }
+                className={`flex items-center gap-2 px-4 py-2 rounded text-xs font-bold transition-all ${currentView === 'COMMAND' ? 'bg-green-600 text-black shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'hover:bg-green-900/50 text-green-700'}`}
               >
                   <LayoutDashboard size={14} /> SECTOR A: COMMAND
               </button>
               <button 
                 onClick={() => setCurrentView('ARMORY')}
-                className={lex items-center gap-2 px-4 py-2 rounded text-xs font-bold transition-all }
+                className={`flex items-center gap-2 px-4 py-2 rounded text-xs font-bold transition-all ${currentView === 'ARMORY' ? 'bg-yellow-600 text-black shadow-[0_0_10px_rgba(234,179,8,0.5)]' : 'hover:bg-yellow-900/20 text-yellow-700'}`}
               >
                   <Grid size={14} /> SECTOR B: ARMORY
               </button>
@@ -190,8 +190,8 @@ function App() {
                     </div>
                     <button 
                         onClick={handleLogin}
-                        className={lex items-center gap-2 px-6 py-3 rounded font-bold transition-all border
-                            }
+                        className={`flex items-center gap-2 px-6 py-3 rounded font-bold transition-all border
+                            ${isPro ? 'bg-green-900/50 text-green-400 border-green-500 cursor-default' : 'bg-yellow-600 hover:bg-yellow-500 text-black border-yellow-400 hover:scale-105'}`}
                     >
                         {isPro ? <><Unlock size={18} /> CLEARANCE: ACTIVE</> : <><Lock size={18} /> UNLOCK PRO INTEL</>}
                     </button>
@@ -209,17 +209,20 @@ function App() {
                     {/* ACTION BOX - "WHO LET THE DOGS OUT" EDITION */}
                     <div className="bg-green-900/10 border border-green-800 p-6 rounded-lg backdrop-blur-sm flex items-center relative overflow-hidden group">
                         {/* Background Pulse Effect */}
-                        <div className={bsolute inset-0 bg-red-900/20 transition-opacity duration-500 }></div>
+                        <div className={`absolute inset-0 bg-red-900/20 transition-opacity duration-500 ${loading ? 'opacity-100 animate-pulse' : 'opacity-0'}`}></div>
                         
                         <div className="grid grid-cols-2 gap-3 w-full relative z-10">
                             <button 
                                 onClick={() => triggerScan("appsumo")}
                                 disabled={loading}
-                                className={
+                                className={`
                                     font-black py-4 rounded flex justify-center items-center gap-2 transition-all 
                                     disabled:opacity-80 disabled:cursor-not-allowed
-                                    
-                                }
+                                    ${loading 
+                                        ? 'bg-red-600 text-black shadow-[0_0_30px_rgba(220,38,38,0.6)]' 
+                                        : 'bg-green-700 hover:bg-green-600 text-black hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]'
+                                    }
+                                `}
                             >
                                 {loading ? (
                                     <span className="tracking-widest animate-bounce">US! US!</span>
@@ -234,11 +237,14 @@ function App() {
                             <button 
                                 onClick={() => triggerScan("amazon")}
                                 disabled={loading}
-                                className={
+                                className={`
                                     font-black py-4 rounded flex justify-center items-center gap-2 transition-all 
                                     disabled:opacity-80 disabled:cursor-not-allowed
-                                    
-                                }
+                                    ${loading 
+                                        ? 'bg-orange-600 text-black shadow-[0_0_30px_rgba(234,88,12,0.6)]' 
+                                        : 'bg-orange-600 hover:bg-orange-500 text-black hover:shadow-[0_0_20px_rgba(234,88,12,0.4)]'
+                                    }
+                                `}
                             >
                                 {loading ? (
                                     <span className="tracking-widest animate-bounce">US! US!</span>
@@ -327,14 +333,14 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {SPONSOR_DATA.map((ad) => (
-                      <div key={ad.id} className={g-black/80 border  p-6 rounded-lg relative overflow-hidden group hover:bg-gray-900 transition-all hover:scale-[1.02] cursor-pointer}>
+                      <div key={ad.id} className={`bg-black/80 border ${ad.border} p-6 rounded-lg relative overflow-hidden group hover:bg-gray-900 transition-all hover:scale-[1.02] cursor-pointer`}>
                           <div className="absolute top-0 right-0 bg-gray-800 text-gray-400 text-[9px] px-2 py-1 font-bold">{ad.category}</div>
-                          <Cpu size={32} className={mb-4 } />
-                          <h3 className={	ext-2xl font-black mb-2 }>{ad.brand}</h3>
+                          <Cpu size={32} className={`mb-4 ${ad.color}`} />
+                          <h3 className={`text-2xl font-black mb-2 ${ad.color}`}>{ad.brand}</h3>
                           <div className="h-px w-10 bg-gray-700 mb-4"></div>
                           <h4 className="font-bold text-white mb-2 text-sm">{ad.headline}</h4>
                           <p className="text-gray-400 text-xs mb-6 leading-relaxed">{ad.hook}</p>
-                          <button className={w-full py-2 border   text-xs font-bold hover:bg-white/5 transition-colors uppercase tracking-widest flex items-center justify-center gap-2}>
+                          <button className={`w-full py-2 border ${ad.border} ${ad.color} text-xs font-bold hover:bg-white/5 transition-colors uppercase tracking-widest flex items-center justify-center gap-2`}>
                               <ExternalLink size={12} /> {ad.cta}
                           </button>
                       </div>
@@ -362,4 +368,3 @@ function App() {
 }
 
 export default App;
-
