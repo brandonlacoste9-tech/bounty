@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export const SniperAlert = () => {
     const [email, setEmail] = useState('');
