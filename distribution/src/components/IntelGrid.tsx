@@ -1,5 +1,5 @@
 import React from 'react';
-import { Deal } from './Ticker';
+import type { Deal } from './Ticker';
 
 interface IntelGridProps {
     deals: Deal[];
