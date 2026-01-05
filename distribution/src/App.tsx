@@ -21,7 +21,7 @@ const SPONSOR_DATA = [
         id: 'ad-1',
         brand: 'JASPER.AI',
         headline: 'NEURAL CONTENT SYNTHESIS',
-        hook: 'Override writer\'s block. Generate marketing copy at 500% velocity.',
+        hook: "Override writer's block. Generate marketing copy at 500% velocity.",
         cta: 'INITIATE TRIAL',
         category: 'AI / WRITING',
         color: 'text-purple-400',
@@ -68,6 +68,7 @@ function App() {
   const [status, setStatus] = useState('IDLE');
   const [isPro, setIsPro] = useState(false);
 
+  // CHANGE THIS TO YOUR RAILWAY BACKEND URL
   const API_URL = 'https://web-production-b9691.up.railway.app';
   const MASTER_KEY = "HUNT-2026"; // Default clearance
 
@@ -108,11 +109,6 @@ function App() {
         if (code) alert("ACCESS DENIED. INVALID CLEARANCE.");
       }
   };
-  
-  // Pass unlock logic to ticker (in future if extended)
-  const onUnlockRequest = () => {
-    handleLogin();
-  };
 
   const fetchIntel = async () => {
     setLoading(true);
@@ -141,10 +137,14 @@ function App() {
       setStatus(SCAN COMPLETE:  TARGETS FOUND);
       fetchIntel(); 
     } catch (error) {
-        console.error("Scan error:", error);
         setStatus('SCAN FAILED');
         setLoading(false);
     }
+  };
+  
+  // Pass unlock logic to ticker (in future if extended)
+  const onUnlockRequest = () => {
+    handleLogin();
   };
 
   return (
@@ -260,7 +260,8 @@ function App() {
                     <Radio size={18} className="animate-pulse" /> RECENT INTERCEPTS
                 </h2>
                 <div className="space-y-4 h-[calc(100vh-250px)] overflow-y-auto pr-2 custom-scrollbar">
-                    <MysteryTicker unlocked={isPro} onUnlock={handleLogin} />
+                    {/* Only show ticker if it has relevant placeholder logic or data, for now keep it simple */}
+                    <MysteryTicker unlocked={isPro} onUnlock={onUnlockRequest} />
                     
                     {/* SINGLE SPONSORED NODE (Not clogged) */}
                     <div className="group border border-yellow-600/30 bg-yellow-900/5 p-4 rounded relative overflow-hidden cursor-pointer hover:bg-yellow-900/10" onClick={() => setCurrentView('ARMORY')}>
