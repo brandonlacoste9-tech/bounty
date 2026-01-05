@@ -72,9 +72,29 @@ function App() {
   const MASTER_KEY = "HUNT-2026"; // Default clearance
 
   useEffect(() => {
+    // 1. CHECK CLEARANCE
     const clearance = localStorage.getItem('cyberhound_clearance');
     if (clearance === MASTER_KEY) setIsPro(true);
-    fetchIntel();
+
+    // 2. RUN CINEMATIC BOOT SEQUENCE
+    const bootUp = async () => {
+        setStatus('INITIALIZING KERNEL...');
+        await new Promise(r => setTimeout(r, 600));
+        
+        setStatus('LOADING NEURAL WEIGHTS...');
+        await new Promise(r => setTimeout(r, 600));
+        
+        setStatus('DECRYPTING SECURE CHANNELS...');
+        await new Promise(r => setTimeout(r, 600));
+        
+        setStatus('MOUNTING CYBER-HOUND OS v3.2...');
+        await new Promise(r => setTimeout(r, 800));
+
+        // 3. START ACTUAL DATA FETCH
+        fetchIntel(); 
+    };
+
+    bootUp();
   }, []);
 
   const handleLogin = () => {
@@ -343,3 +363,4 @@ function App() {
 }
 
 export default App;
+
