@@ -114,29 +114,49 @@ def test_sniff():
             "extracted_intel": json.loads(data) if isinstance(data, str) and "{" in data else data,
             "status": "SUCCESS"
         }
-        
     except Exception as e:
         return {
             "mission": "Deal Extraction",
             "error": str(e),
             "status": "FAILED"
         }
-        
-@app.post("/api/scan")
-async def trigger_scan(background_tasks: BackgroundTasks):
-    if run_nose:
-        background_tasks.add_task(run_scan_task)
-        return {"status": "Scan initiated"}
-    else:
-        return {"status": "Error: Nose module not loaded"}
+from extraction.scrapers.appsumo import hunt_appsumo
 
-async def run_scan_task():
-    print("[API] Running Nose Scan...")
+# --- 6. OPERATION DEEP SNIFF (Enhanced Scan) ---
+@app.post("/api/scan")
+async def trigger_scan(target: str = "appsumo"):
+    """
+    Activates the Enhanced Nose to hunt specific targets.
+    Default: AppSumo (Lifetime Deals).
+    """
+    print(f"🐺 COMMAND RECEIVED: Hunt Target [{target.upper()}]")
+    
     try:
-        await run_nose()
-        print("[API] Scan complete.")
+        # A. THE NOSE (Scraping)
+        if target == "appsumo":
+             raw_intel = await hunt_appsumo()
+        else:
+             return {"status": "FAILED", "reason": "Unknown Sector"}
+
+        # B. THE BRAIN (Analysis - Optional for now, just pass through)
+        # In Phase 3, we will pass 'raw_intel' to Gemini to grade the deals (Value Score).
+        
+        # C. STORAGE (Save to 'latest_deals.json' for the frontend)
+        # For now, we overwrite the feed. In future, we append.
+        with open("latest_deals.json", "w") as f:
+            json.dump(raw_intel, f)
+
+        return {
+            "mission": "Operation Deep Sniff",
+            "target": target,
+            "intel_count": len(raw_intel),
+            "status": "SUCCESS",
+            "intel": raw_intel
+        }
+
     except Exception as e:
-        print(f"[API] Scan failed: {e}")
+        print(f"🚨 MISSION FAILURE: {e}")
+        return {"status": "FAILED", "error": str(e)}
 
 if __name__ == "__main__":
     import uvicorn
