@@ -88,7 +88,7 @@ function App() {
         setStatus('DECRYPTING SECURE CHANNELS...');
         await new Promise(r => setTimeout(r, 600));
         
-        setStatus('MOUNTING CYBER-HOUND OS v3.2...');
+        setStatus('MOUNTING CYBER-HOUND OS v3.3...');
         await new Promise(r => setTimeout(r, 800));
 
         // 3. START ACTUAL DATA FETCH
@@ -352,7 +352,7 @@ function App() {
 
       {/* FOOTER */}
       <footer className="fixed bottom-0 left-0 right-0 bg-black/90 border-t border-green-900/50 py-2 px-4 backdrop-blur text-center text-[10px] text-green-800 flex justify-between items-center z-50">
-            <div>CYBERHOUND OS v3.2 // {currentView} MODE</div>
+            <div>CYBERHOUND OS v3.3 // {currentView} MODE</div>
             <div className="flex gap-4">
                 <a href="mailto:cyberhoundog@gmail.com" className="hover:text-green-400">ENCRYPTED COMMS</a>
             </div>
@@ -362,3 +362,4 @@ function App() {
 }
 
 export default App;
+
