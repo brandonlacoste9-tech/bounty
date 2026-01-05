@@ -42,9 +42,9 @@ function App() {
     }
   };
 
-  const triggerScan = async () => {
+  const triggerScan = async (target = "appsumo") => {
     setLoading(true);
-    setStatus('SCANNING SECTOR 7G (APPSUMO)...');
+    setStatus(SCANNING SECTOR: ...);
     try {
       const response = await fetch(${API_URL}/api/scan, { method: 'POST' });
       const data = await response.json();
@@ -119,12 +119,12 @@ function App() {
                 {/* ACTION BOX */}
                 <div className="bg-green-900/10 border border-green-800 p-6 rounded-lg backdrop-blur-sm flex items-center">
                     <button 
-                        onClick={triggerScan}
+                        onClick={() => triggerScan('appsumo')}
                         disabled={loading}
                         className="w-full bg-green-700 hover:bg-green-600 text-black font-bold py-4 rounded flex justify-center items-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
                     >
                         {loading ? <Zap className="animate-spin" /> : <Scan />}
-                        {loading ? 'EXECUTING PROTOCOL...' : 'TRIGGER CLOUD SCAN'}
+                        {loading ? 'EXECUTING PROTOCOL...' : 'APPSUMO SCAN'}
                     </button>
                 </div>
             </div>
@@ -224,3 +224,4 @@ function App() {
 }
 
 export default App;
+

@@ -121,6 +121,7 @@ def test_sniff():
             "status": "FAILED"
         }
 from extraction.scrapers.appsumo import hunt_appsumo
+from extraction.scrapers.amazon import hunt_amazon
 
 # --- 6. OPERATION DEEP SNIFF (Enhanced Scan) ---
 @app.post("/api/scan")
@@ -161,3 +162,4 @@ async def trigger_scan(target: str = "appsumo"):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=5000)
+
