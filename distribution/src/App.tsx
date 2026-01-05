@@ -44,7 +44,7 @@ function App() {
       try {
         // In local dev, use localhost:5000. In prod, use window.location.origin or env var
         const apiUrl = import.meta.env.PROD
-          ? 'https://independent-manifestation.up.railway.app'  // Predicted URL
+          ? 'https://web-production-b9691.up.railway.app'
           : 'http://localhost:5000';
 
         const res = await fetch(`${apiUrl}/api/intel`);
@@ -69,7 +69,7 @@ function App() {
 
     try {
       const apiUrl = import.meta.env.PROD
-        ? 'https://independent-manifestation.up.railway.app'
+        ? 'https://web-production-b9691.up.railway.app'
         : 'http://localhost:5000';
 
       const res = await fetch(`${apiUrl}/api/test_sniff`);
