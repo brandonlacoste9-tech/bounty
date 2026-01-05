@@ -3,3 +3,5 @@ uvicorn
 playwright
 google-cloud-storage
 nest_asyncio
+google-generativeai
+requests
