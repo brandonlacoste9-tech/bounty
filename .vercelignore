@@ -1,0 +1,12 @@
+# Ignore Python Backend Files (Deploy these to Railway)
+*.py
+requirements.txt
+extraction/
+__pycache__/
+venv/
+latest_deals.json
+
+# Ignore System Files
+.env
+.git
+.github
