@@ -1,98 +1,49 @@
-import { Lock, Unlock, Zap, EyeOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 
-interface MysteryTickerProps {
-    unlocked?: boolean;
-    onUnlock?: () => void;
-}
+const MARKET_DATA = [
+    { symbol: 'BTC', price: '64,231', change: '+2.4%', up: true },
+    { symbol: 'ETH', price: '3,452', change: '+1.1%', up: true },
+    { symbol: 'SOL', price: '145', change: '-0.5%', up: false },
+    { symbol: 'USDC', price: '1.00', change: '0.0%', up: true },
+    { symbol: 'NVDA', price: '892', change: '+4.2%', up: true },
+];
 
-const MysteryTicker = ({ unlocked = false, onUnlock }: MysteryTickerProps) => {
-    
-    // MOCK DATA FOR THE MYSTERY BOX
-    const SECRET_DEAL = {
-        title: 'LIFETIME ACCESS: FLUTTERFLOW',
-        price: 'FREE',
-        real_price: '(Was /mo)',
-        url: 'https://buy.stripe.com/7sYfZgdJP9Kdd4i95v1Fe08' // Stripe Link
-    };
+export function MysteryTicker() {
+  const [offset, setOffset] = useState(0);
 
-    const triggerPaywall = () => {
-        if (onUnlock) {
-            onUnlock();
-        } else {
-            window.open('https://buy.stripe.com/7sYfZgdJP9Kdd4i95v1Fe08', '_blank');
-        }
-    };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOffset((prev) => (prev > 1000 ? 0 : prev + 1));
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
 
-    return (
-        <div className={elative overflow-hidden rounded-lg border transition-all duration-500 mb-4 p-4 }>
-            
-            {/* Header */}
-            <div className='flex justify-between items-center mb-3'>
-                <div className={lex items-center gap-2 }>
-                    {unlocked ? <Unlock size={14} /> : <Zap size={14} className='animate-pulse' />}
-                    <span className='text-[10px] font-bold tracking-[0.2em]'>{unlocked ? 'DECRYPTED INTEL' : 'CLASSIFIED SIGINT'}</span>
-                </div>
-                {!unlocked && (
-                    <span className='bg-yellow-500/20 text-yellow-500 text-[9px] px-2 py-0.5 rounded animate-pulse'>
-                        HIGH VALUE
+  return (
+    <div className="fixed bottom-0 left-0 right-0 bg-black/90 border-t border-emerald-900/50 h-8 overflow-hidden z-40 flex items-center">
+        <div className="flex gap-12 whitespace-nowrap animate-marquee px-4 w-full">
+            {MARKET_DATA.map((item, i) => (
+                <div key={i} className="flex items-center gap-2 text-[10px] font-mono">
+                    <span className="text-emerald-600 font-bold">{item.symbol}</span>
+                    <span className="text-gray-300">${item.price}</span>
+                    <span className={`flex items-center ${item.up ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {item.up ? <TrendingUp size={10} className="mr-1"/> : <TrendingDown size={10} className="mr-1"/>}
+                        {item.change}
                     </span>
-                )}
-            </div>
-
-            {/* Content Container */}
-            <div className='relative'>
-                
-                {/* LOCKED STATE */}
-                {!unlocked && (
-                    <div className='flex flex-col gap-2 relative z-10'>
-                        <div className='flex items-center gap-2 opacity-50 blur-[2px] select-none'>
-                             <div className='w-12 h-12 bg-yellow-700/50 rounded'></div>
-                             <div className='flex flex-col gap-1 w-full'>
-                                <div className='h-4 bg-yellow-700/50 rounded w-3/4'></div>
-                                <div className='h-3 bg-yellow-700/30 rounded w-1/2'></div>
-                             </div>
-                        </div>
-                        
-                        <div className='absolute inset-0 flex items-center justify-center'>
-                             <button 
-                                onClick={triggerPaywall}
-                                className='bg-black hover:bg-yellow-950 text-yellow-500 border border-yellow-600 px-4 py-2 rounded flex items-center gap-2 shadow-[0_0_20px_rgba(234,179,8,0.2)] hover:scale-105 transition-all'
-                            >
-                                <Lock size={14} />
-                                <span className='font-bold text-[10px] tracking-widest'>DECRYPT DATA</span>
-                            </button>
-                        </div>
-                    </div>
-                )}
-                
-                {/* UNLOCKED STATE */}
-                {unlocked && (
-                    <div className='flex gap-4 items-start animate-in fade-in slide-in-from-bottom-2 duration-500'>
-                         <div className='w-12 h-12 bg-green-900/50 border border-green-700 rounded flex items-center justify-center text-green-400'>
-                            <EyeOff size={20} />
-                         </div>
-                         <div className='flex flex-col gap-1 w-full'>
-                            <h3 className='font-bold text-green-100 text-sm leading-tight'>{SECRET_DEAL.title}</h3>
-                            <div className='flex justify-between items-center'>
-                                <span className='text-yellow-500 font-bold'>{SECRET_DEAL.price} <span className='text-gray-500 text-xs font-normal'>{SECRET_DEAL.real_price}</span></span>
-                                <a 
-                                     href={SECRET_DEAL.url} 
-                                     target='_blank' 
-                                     className='text-[10px] font-bold text-black bg-green-500 px-3 py-1 rounded hover:bg-green-400 transition-colors'
-                                 >
-                                    ACCESS
-                                 </a>
-                            </div>
-                         </div>
-                    </div>
-                )}
-
-            </div>
-            
-            {/* Scanline decoration */}
-            <div className='absolute inset-0 pointer-events-none bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20'></div>
+                </div>
+            ))}
+             {/* Duplicate for seamless scroll effect */}
+             {MARKET_DATA.map((item, i) => (
+                <div key={`dup-${i}`} className="flex items-center gap-2 text-[10px] font-mono">
+                    <span className="text-emerald-600 font-bold">{item.symbol}</span>
+                    <span className="text-gray-300">${item.price}</span>
+                    <span className={`flex items-center ${item.up ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {item.up ? <TrendingUp size={10} className="mr-1"/> : <TrendingDown size={10} className="mr-1"/>}
+                        {item.change}
+                    </span>
+                </div>
+            ))}
         </div>
-    );
-};
-
-export default MysteryTicker;
+    </div>
+  );
+}
