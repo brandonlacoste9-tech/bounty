@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Target, Terminal, Shield, PlusCircle, ExternalLink, Activity, Briefcase, Clock, Skull, Zap, Wifi } from 'lucide-react';
+import { Target, Shield, PlusCircle, ExternalLink, Activity, Briefcase, Clock, Skull, Zap, Wifi, Search, MapPin, ChevronRight, AlertTriangle } from 'lucide-react';
 
 // --- DATA STRUCTURES ---
 interface Bounty {
@@ -14,7 +14,7 @@ interface Bounty {
     url: string;
 }
 
-// 1. FALLBACK STATIC DATA (Simulation Mode)
+// 1. FALLBACK STATIC DATA
 const STATIC_BOUNTIES: Bounty[] = [
     { 
         id: 'B-001', 
@@ -118,18 +118,20 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-emerald-300 font-mono p-4 selection:bg-emerald-900 selection:text-white pb-24">
-      <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-50 bg-[length:100%_4px,3px_100%]"></div>
+    <div className="min-h-screen bg-slate-900 text-slate-300 font-sans p-4 selection:bg-emerald-500 selection:text-white pb-32">
+      
+      {/* Background Texture */}
+      <div className="fixed inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
       {/* HEADER */}
-      <nav className="max-w-4xl mx-auto mb-12 flex justify-between items-center border-b border-emerald-800/50 pb-6 pt-4 relative z-10 transition-all duration-500 animate-in fade-in slide-in-from-top-4">
+      <nav className="max-w-6xl mx-auto mb-10 mt-4 flex justify-between items-center bg-slate-800/80 backdrop-blur-md p-4 rounded-xl border border-slate-700 shadow-xl sticky top-4 z-50">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-emerald-900/30 rounded flex items-center justify-center border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                <Target size={24} className="text-emerald-400" />
+            <div className="w-12 h-12 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                <Target size={28} className="text-white" />
             </div>
             <div>
-                <h1 className="font-black text-2xl tracking-widest text-white shadow-emerald-500/20 drop-shadow-sm">BOUNTY</h1>
-                <p className="text-[10px] text-emerald-400 font-bold tracking-[0.4em] uppercase">Global Work Protocol // v1.0</p>
+                <h1 className="font-black text-2xl tracking-tight text-white leading-none">BOUNTY</h1>
+                <p className="text-[11px] text-emerald-400 font-bold tracking-widest uppercase mt-1">Global Work Protocol</p>
             </div>
           </div>
           
@@ -137,87 +139,88 @@ function App() {
             href={STRIPE_POST_LINK}
             target="_blank"
             rel="noreferrer"
-            className="hidden md:flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-3 rounded font-bold shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:scale-105 transition-all text-xs tracking-widest border border-yellow-300"
+            className="flex items-center gap-2 bg-white hover:bg-emerald-50 text-slate-900 px-6 py-3 rounded-lg font-bold shadow-lg shadow-white/10 hover:shadow-xl hover:scale-[1.02] transition-all text-sm"
           >
-              <PlusCircle size={16} /> POST BOUNTY ($29)
+              <PlusCircle size={18} className="text-emerald-600" /> 
+              <span className="hidden md:inline">POST BOUNTY</span>
+              <span className="bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded text-[10px] ml-1">$29</span>
           </a>
       </nav>
 
-      {/* BOUNTY GRID */}
-      <main className="max-w-4xl mx-auto relative z-10">
+      {/* MAIN CONTENT */}
+      <main className="max-w-6xl mx-auto relative z-10 px-2">
           
-          {/* STATS BAR */}
-          <div className="flex justify-between items-end mb-6 text-xs text-emerald-500 font-bold tracking-wider">
-              <div className="flex gap-6">
-                 <span className={`flex items-center gap-2 transition-colors ${loading ? 'text-yellow-400' : 'text-emerald-400'}`}>
-                    <Activity size={14} className={loading ? "animate-spin" : "animate-pulse"} /> {loading ? 'SCANNING...' : connectionStatus}
+          {/* STATS & FILTERS */}
+          <div className="flex flex-col md:flex-row justify-between items-end md:items-center mb-8 gap-4 bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+              <div className="flex flex-wrap gap-6 text-sm font-medium">
+                 <span className={`flex items-center gap-2 transition-colors ${loading ? 'text-emerald-400' : 'text-slate-400'}`}>
+                    <div className={`w-2 h-2 rounded-full ${loading ? "bg-emerald-400 animate-ping" : "bg-emerald-500"}`}></div>
+                    {loading ? 'SCANNING NETWORK...' : connectionStatus}
                  </span>
-                 <span className="flex items-center gap-2 mobile-hide text-emerald-600"><Briefcase size={14} /> {bounties.length} CONTRACTS</span>
+                 <span className="flex items-center gap-2 text-slate-300"><Briefcase size={16} className="text-slate-500" /> {bounties.length} ACTIVE CONTRACTS</span>
               </div>
-              <button onClick={refreshFeed} disabled={loading} className="flex items-center gap-2 text-emerald-400 hover:text-white transition-colors group disabled:opacity-50">
-                  <span className="group-hover:animate-spin"><Zap size={12} /></span> REFRESH SIGNALS
+              
+              <button onClick={refreshFeed} disabled={loading} className="flex items-center gap-2 text-emerald-400 hover:text-white transition-colors text-sm font-bold bg-slate-900/50 px-4 py-2 rounded border border-slate-900 hover:border-emerald-500/50 hover:bg-emerald-500/10 active:scale-95 disabled:opacity-50">
+                  <span className={loading ? "animate-spin" : ""}><Zap size={14} /></span> REFRESH FEED
               </button>
           </div>
 
-          <div className={`space-y-4 transition-all duration-300 ${loading ? 'opacity-50 scale-[0.99] blur-[2px]' : 'opacity-100 scale-100 blur-0'}`}>
+          <div className={`grid grid-cols-1 gap-4 transition-all duration-300 ${loading ? 'opacity-80' : 'opacity-100'}`}>
               
               {/* BOUNTY CARD MAPPING */}
               {bounties.map((bounty) => (
-                  <div key={bounty.id} className="group relative bg-neutral-900 border border-emerald-800/60 hover:border-emerald-400 transition-all rounded-lg p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 overflow-hidden hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] animate-in fade-in slide-in-from-bottom-2">
+                  <div key={bounty.id} className="group relative bg-slate-800 border-l-4 border-l-transparent hover:border-l-emerald-500 border-y border-r border-slate-700 hover:bg-slate-750 transition-all rounded-r-lg p-6 shadow-lg hover:shadow-xl animate-in fade-in slide-in-from-bottom-4">
                       
-                      {/* Left: Info */}
-                      <div className="flex items-start gap-4 flex-grow">
-                           {/* Icon Box */}
-                           <div className={`w-12 h-12 shrink-0 rounded flex items-center justify-center border bg-black shadow-lg ${
-                               bounty.difficulty === 'LETHAL' ? 'border-red-500/50 text-red-500 shadow-red-900/20' :
-                               bounty.difficulty === 'VETERAN' ? 'border-yellow-500/50 text-yellow-500 shadow-yellow-900/20' :
-                               'border-emerald-500/50 text-emerald-500 shadow-emerald-900/20'
-                           }`}>
-                               {bounty.difficulty === 'LETHAL' ? <Skull size={20} /> : 
-                                bounty.difficulty === 'VETERAN' ? <Target size={20} /> :
-                                <Terminal size={20} />}
-                           </div>
-
-                           <div className="w-full">
-                               <div className="flex flex-wrap items-center gap-3 mb-1">
-                                   <h3 className="font-bold text-lg text-white group-hover:text-emerald-300 transition-colors tracking-tight line-clamp-1">{bounty.task}</h3>
-                                   <span className={`text-[9px] px-2 py-0.5 rounded border tracking-wider font-bold ${
-                                       bounty.difficulty === 'LETHAL' ? 'bg-red-900/10 text-red-400 border-red-900' :
-                                       bounty.difficulty === 'VETERAN' ? 'bg-yellow-900/10 text-yellow-400 border-yellow-900' :
-                                       'bg-emerald-900/10 text-emerald-400 border-emerald-900'
-                                   }`}>{bounty.difficulty}</span>
+                      <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+                           
+                           {/* Details */}
+                           <div className="flex-grow space-y-3">
+                               <div className="flex flex-wrap items-center gap-3">
+                                   <span className={`px-2 py-1 rounded text-[10px] font-black tracking-wider uppercase border ${
+                                       bounty.difficulty === 'LETHAL' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
+                                       bounty.difficulty === 'VETERAN' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                       'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                   }`}>
+                                       {bounty.difficulty}
+                                   </span>
+                                   <span className="text-xs text-slate-500 font-mono">#{bounty.id}</span>
                                </div>
-                               <p className="text-sm text-gray-300 mb-2 font-medium line-clamp-2 md:line-clamp-1 leading-relaxed">{bounty.description}</p>
-                               <div className="flex items-center gap-4 text-[10px] font-bold text-emerald-500/80">
-                                   <span className="flex items-center gap-1 text-emerald-400"><Shield size={10} /> {bounty.client}</span>
-                                   <span className="flex items-center gap-1 text-emerald-600"><Clock size={10} /> {(Math.random() * 10).toFixed(0)}H AGO</span>
+                               
+                               <h3 className="font-bold text-xl text-white group-hover:text-emerald-400 transition-colors">{bounty.task}</h3>
+                               
+                               <p className="text-slate-400 leading-relaxed max-w-2xl">{bounty.description}</p>
+                               
+                               <div className="flex flex-wrap items-center gap-6 text-xs font-semibold text-slate-500 pt-2">
+                                   <span className="flex items-center gap-2 text-slate-400"><Shield size={14} className="text-slate-600" /> {bounty.client}</span>
+                                   <span className="flex items-center gap-2"><MapPin size={14} /> REMOTE</span>
+                                   <span className="flex items-center gap-2"><Clock size={14} /> POSTED {(Math.random() * 24).toFixed(0)}H AGO</span>
                                </div>
                            </div>
-                      </div>
 
-                      {/* Right: Reward & Action */}
-                      <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-emerald-900/30 pt-4 md:pt-0 shrink-0">
-                          <div className="text-right">
-                              <p className="text-[9px] text-gray-500 mb-0.5 tracking-widest uppercase font-semibold">BOUNTY REWARD</p>
-                              <p className="text-xl font-black text-white flex items-center gap-1 justify-end tracking-tighter shadow-black drop-shadow-md">
-                                  {bounty.reward}
-                              </p>
-                          </div>
-                          
-                          <a href={bounty.url || STRIPE_POST_LINK} target="_blank" rel="noreferrer" className="bg-emerald-950 hover:bg-emerald-500 hover:text-black border border-emerald-500/50 text-emerald-400 px-5 py-3 rounded font-black text-[10px] tracking-[0.2em] transition-all flex items-center gap-2 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] active:scale-95">
-                              ACCEPT <ExternalLink size={12} />
-                          </a>
+                           {/* Reward & Action */}
+                           <div className="flex flex-row md:flex-col items-center md:items-end gap-4 w-full md:w-auto border-t md:border-t-0 border-slate-700 pt-4 md:pt-0 justify-between">
+                               <div className="text-right">
+                                   <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-wider mb-1">BOUNTY REWARD</p>
+                                   <span className="text-2xl font-black text-white tracking-tight">{bounty.reward}</span>
+                               </div>
+                               
+                               <a href={bounty.url || STRIPE_POST_LINK} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded font-bold text-sm shadow-lg shadow-emerald-900/20 transition-all hover:scale-105 active:scale-95 whitespace-nowrap">
+                                   ACCEPT CONTRACT <ChevronRight size={16} />
+                               </a>
+                           </div>
                       </div>
-
                   </div>
               ))}
 
               {/* EMPTY STATE / CTA */}
-              <div className="bg-neutral-900/50 border border-dashed border-emerald-900/50 rounded-lg p-12 text-center mt-8 hover:border-emerald-700 transition-colors">
-                  <p className="text-gray-500 mb-4 font-mono text-xs tracking-widest">END OF SECURE FEED</p>
-                  <p className="text-emerald-400 text-sm mb-6 font-bold">Have a job that needs doing? Tap into the network.</p>
-                  <a href={STRIPE_POST_LINK} className="inline-flex items-center gap-2 text-yellow-500 hover:text-yellow-400 font-bold border-b-2 border-yellow-500/50 hover:border-yellow-500 pb-0.5 text-xs tracking-widest uppercase transition-all">
-                      POST A PRIORITY CONTRACT <ExternalLink size={10}/>
+              <div className="bg-slate-800/30 border-2 border-dashed border-slate-700 rounded-xl p-12 text-center mt-8 hover:bg-slate-800/50 transition-colors">
+                  <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-700">
+                    <Search size={32} className="text-slate-600" />
+                  </div>
+                  <h3 className="text-white font-bold text-lg mb-2">Seek and Destroy</h3>
+                  <p className="text-slate-400 text-sm mb-8 max-w-md mx-auto">This feed is curated for high-value targets. Don't see a job that fits your skillset? Post your own bounty or check back later.</p>
+                  <a href={STRIPE_POST_LINK} className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-bold uppercase tracking-widest text-xs border-b-2 border-emerald-500/20 hover:border-emerald-500 pb-1 transition-all">
+                      Broadcast Signal <Wifi size={14}/>
                   </a>
               </div>
 
@@ -225,17 +228,12 @@ function App() {
 
       </main>
       
-      {/* MOBILE FAB FOR POSTING */}
+      {/* MOBILE FAB */}
       <div className="md:hidden fixed bottom-6 right-6 z-50">
-          <a href={STRIPE_POST_LINK} className="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center text-black shadow-[0_0_20px_rgba(234,179,8,0.5)] border-2 border-yellow-400 animate-bounce-slow">
-              <PlusCircle size={28} />
+          <a href={STRIPE_POST_LINK} className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-xl shadow-emerald-500/30 border-2 border-emerald-400">
+              <PlusCircle size={32} />
           </a>
       </div>
-      
-      <footer className="fixed bottom-0 left-0 right-0 py-2 text-center text-[9px] text-emerald-800 z-0 pointer-events-none flex justify-center items-center gap-2">
-          <Wifi size={10} className={connectionStatus.includes('OFFLINE') ? 'text-red-900' : 'text-emerald-900'} /> 
-          SECURE CONNECTION // BOUNTY PROTOCOL
-      </footer>
 
     </div>
   );
