@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Target, Terminal, Shield, PlusCircle, ExternalLink, Activity, Briefcase, Clock, Skull, Ghost, Zap, Wifi } from 'lucide-react';
+import { Target, Terminal, Shield, PlusCircle, ExternalLink, Activity, Briefcase, Clock, Skull, Zap, Wifi } from 'lucide-react';
 
 // --- DATA STRUCTURES ---
 interface Bounty {
