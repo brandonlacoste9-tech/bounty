@@ -3,15 +3,15 @@ import { Target, Terminal, Shield, PlusCircle, ExternalLink, Activity, Briefcase
 
 // --- DATA STRUCTURES ---
 interface Bounty {
-  id: string;
-  client: string;
-  task: string;
-  description: string;
-  reward: string;
-  difficulty: 'NOVICE' | 'VETERAN' | 'LETHAL';
-  type: 'RECON' | 'DEV' | 'DESIGN' | 'MARKETING';
-  status: 'OPEN' | 'TAKEN';
-  url: string;
+    id: string;
+    client: string;
+    task: string;
+    description: string;
+    reward: string;
+    difficulty: 'NOVICE' | 'VETERAN' | 'LETHAL';
+    type: 'RECON' | 'DEV' | 'DESIGN' | 'MARKETING';
+    status: 'OPEN' | 'TAKEN';
+    url: string;
 }
 
 // 1. FALLBACK STATIC DATA (Simulation Mode)
@@ -22,7 +22,7 @@ const STATIC_BOUNTIES: Bounty[] = [
         client: 'ONYX SYSTEMS', 
         task: 'PENETRATION TEST: v2.0 API', 
         description: 'TARGET: User Auth Protocol. OBJECTIVE: Bypass MFA. REQUIRES: Python, Burp Suite.', 
-        reward: ',500.00 USDC', 
+        reward: '$2,500.00 USDC', 
         difficulty: 'LETHAL', 
         type: 'DEV', 
         status: 'OPEN',
@@ -33,7 +33,7 @@ const STATIC_BOUNTIES: Bounty[] = [
         client: 'STEALTH FINTECH', 
         task: 'DATA HARVEST: CTO EMAILS', 
         description: 'TARGET: 50x Series A Startups. OBJECTIVE: Extract Lead List. REQUIRES: OSINT, Scrapers.', 
-        reward: '.00', 
+        reward: '$450.00', 
         difficulty: 'VETERAN', 
         type: 'RECON', 
         status: 'OPEN',
@@ -44,7 +44,7 @@ const STATIC_BOUNTIES: Bounty[] = [
         client: 'REDACTED PROTOCOL', 
         task: 'UI OVERHAUL: DARK MODE', 
         description: 'TARGET: Dashboard. OBJECTIVE: "High-Contrast Terminal" aesthetic. REQUIRES: Tailwind, React.', 
-        reward: '.00', 
+        reward: '$800.00', 
         difficulty: 'VETERAN', 
         type: 'DESIGN', 
         status: 'OPEN',
@@ -55,7 +55,7 @@ const STATIC_BOUNTIES: Bounty[] = [
         client: 'UNKNOWN SYNDICATE', 
         task: 'VIRAL ENGAGEMENT BOT', 
         description: 'TARGET: Twitter/X. OBJECTIVE: Auto-reply to crypto influencers. REQUIRES: GPT-4, Automation.', 
-        reward: ',200.00', 
+        reward: '$1,200.00', 
         difficulty: 'LETHAL', 
         type: 'DEV', 
         status: 'OPEN',
@@ -66,7 +66,7 @@ const STATIC_BOUNTIES: Bounty[] = [
         client: 'AVALON CORP', 
         task: 'COPYWRITING: LANDING PAGE', 
         description: 'TARGET: Sales Funnel. OBJECTIVE: Increment conversion by 2%. REQUIRES: Psychology, English.', 
-        reward: '.00', 
+        reward: '$150.00', 
         difficulty: 'NOVICE', 
         type: 'MARKETING', 
         status: 'OPEN',
@@ -78,45 +78,49 @@ function App() {
   const [bounties, setBounties] = useState<Bounty[]>(STATIC_BOUNTIES);
   const [loading, setLoading] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('OFFLINE / SIMULATION');
+  const [activeTab] = useState<'COMMAND' | 'ARMORY'>('COMMAND');
 
-  // !!! REPLACE THIS WITH YOUR NEW RAILWAY URL IF IT CHANGED !!!
   const API_URL = 'https://web-production-b9691.up.railway.app';
   const STRIPE_POST_LINK = "https://buy.stripe.com/7sYfZgdJP9Kdd4i95v1Fe08"; 
 
   // 2. HYBRID FETCHING LOGIC
   useEffect(() => {
-      fetchLiveBounties();
+    const fetchLiveBounties = async () => {
+        setLoading(true);
+        try {
+            console.log(`📡 CONNECTING TO: ${API_URL}`);
+            // 1. Try to fetch from backend
+            const response = await fetch(`${API_URL}/latest_deals.json`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const data = await response.json();
+            
+            if (Array.isArray(data) && data.length > 0) {
+                setBounties(data);
+                setConnectionStatus('CONNECTED // LIVE FEED');
+            } else {
+                // Backend is empty? Use static.
+                setConnectionStatus('CONNECTED // NO SIGNALS (USING SIMULATION)');
+            }
+        } catch (error) {
+            console.warn("⚠️ BACKEND SILENT. USING FALLBACK PROTOCOL.", error);
+            setConnectionStatus('BACKEND OFFLINE // SIMULATION MODE');
+            // Shuffle static data so it feels fresh
+            setBounties([...STATIC_BOUNTIES].sort(() => Math.random() - 0.5));
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchLiveBounties();
   }, []);
 
-  const fetchLiveBounties = async () => {
-      setLoading(true);
-      try {
-          console.log(📡 CONNECTING TO: );
-          // 1. Try to fetch from backend
-          const response = await fetch(${API_URL}/latest_deals.json);
-          if (!response.ok) throw new Error('Network response was not ok');
-          
-          const data = await response.json();
-          
-          if (Array.isArray(data) && data.length > 0) {
-              setBounties(data);
-              setConnectionStatus('CONNECTED // LIVE FEED');
-          } else {
-              // Backend is empty? Use static.
-              setConnectionStatus('CONNECTED // NO SIGNALS (USING SIMULATION)');
-          }
-      } catch (error) {
-          console.warn("⚠️ BACKEND SILENT. USING FALLBACK PROTOCOL.", error);
-          setConnectionStatus('BACKEND OFFLINE // SIMULATION MODE');
-          // Shuffle static data so it feels fresh
-          setBounties([...STATIC_BOUNTIES].sort(() => Math.random() - 0.5));
-      } finally {
-          setLoading(false);
-      }
-  };
-
   const refreshFeed = () => {
-      fetchLiveBounties();
+      // Just re-trigger simulation for now if backend is dead
+      setLoading(true);
+      setTimeout(() => {
+          setBounties([...STATIC_BOUNTIES].sort(() => Math.random() - 0.5));
+          setLoading(false);
+      }, 700);
   };
 
   return (
@@ -141,7 +145,7 @@ function App() {
             rel="noreferrer"
             className="hidden md:flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-3 rounded font-bold shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:scale-105 transition-all text-xs tracking-widest"
           >
-              <PlusCircle size={16} /> POST BOUNTY ()
+              <PlusCircle size={16} /> POST BOUNTY ($29)
           </a>
       </nav>
 
@@ -151,7 +155,7 @@ function App() {
           {/* STATS BAR */}
           <div className="flex justify-between items-end mb-6 text-xs text-emerald-700 font-bold">
               <div className="flex gap-6">
-                 <span className={lex items-center gap-2 transition-colors }>
+                 <span className={`flex items-center gap-2 transition-colors ${loading ? 'text-yellow-500' : 'text-emerald-500'}`}>
                     <Activity size={14} className={loading ? "animate-spin" : "animate-pulse"} /> {loading ? 'SCANNING...' : connectionStatus}
                  </span>
                  <span className="flex items-center gap-2 mobile-hide"><Briefcase size={14} /> {bounties.length} CONTRACTS</span>
@@ -161,7 +165,7 @@ function App() {
               </button>
           </div>
 
-          <div className={space-y-4 transition-all duration-300 }>
+          <div className={`space-y-4 transition-all duration-300 ${loading ? 'opacity-50 scale-[0.99] blur-[2px]' : 'opacity-100 scale-100 blur-0'}`}>
               
               {/* BOUNTY CARD MAPPING */}
               {bounties.map((bounty) => (
@@ -170,7 +174,11 @@ function App() {
                       {/* Left: Info */}
                       <div className="flex items-start gap-4 flex-grow">
                            {/* Icon Box */}
-                           <div className={w-12 h-12 shrink-0 rounded flex items-center justify-center border bg-black shadow-lg }>
+                           <div className={`w-12 h-12 shrink-0 rounded flex items-center justify-center border bg-black shadow-lg ${
+                               bounty.difficulty === 'LETHAL' ? 'border-red-500/50 text-red-500 shadow-red-900/20' :
+                               bounty.difficulty === 'VETERAN' ? 'border-yellow-500/50 text-yellow-500 shadow-yellow-900/20' :
+                               'border-emerald-500/50 text-emerald-500 shadow-emerald-900/20'
+                           }`}>
                                {bounty.difficulty === 'LETHAL' ? <Skull size={20} /> : 
                                 bounty.difficulty === 'VETERAN' ? <Target size={20} /> :
                                 <Terminal size={20} />}
@@ -179,7 +187,11 @@ function App() {
                            <div className="w-full">
                                <div className="flex flex-wrap items-center gap-3 mb-1">
                                    <h3 className="font-bold text-lg text-white group-hover:text-emerald-300 transition-colors tracking-tight line-clamp-1">{bounty.task}</h3>
-                                   <span className={	ext-[9px] px-2 py-0.5 rounded border tracking-wider font-bold }>{bounty.difficulty}</span>
+                                   <span className={`text-[9px] px-2 py-0.5 rounded border tracking-wider font-bold ${
+                                       bounty.difficulty === 'LETHAL' ? 'bg-red-900/20 text-red-500 border-red-900' :
+                                       bounty.difficulty === 'VETERAN' ? 'bg-yellow-900/20 text-yellow-500 border-yellow-900' :
+                                       'bg-emerald-900/20 text-emerald-500 border-emerald-900'
+                                   }`}>{bounty.difficulty}</span>
                                </div>
                                <p className="text-sm text-gray-400 mb-2 font-medium line-clamp-2 md:line-clamp-1">{bounty.description}</p>
                                <div className="flex items-center gap-4 text-[10px] font-bold text-emerald-800">
