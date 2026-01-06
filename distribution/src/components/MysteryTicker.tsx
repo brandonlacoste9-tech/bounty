@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 const MARKET_DATA = [
     { symbol: 'BTC', price: '64,231', change: '+2.4%', up: true },
@@ -10,15 +9,6 @@ const MARKET_DATA = [
 ];
 
 export function MysteryTicker() {
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setOffset((prev) => (prev > 1000 ? 0 : prev + 1));
-    }, 50);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-black/90 border-t border-emerald-900/50 h-8 overflow-hidden z-40 flex items-center">
         <div className="flex gap-12 whitespace-nowrap animate-marquee px-4 w-full">

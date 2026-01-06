@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Target, Terminal, Shield, PlusCircle, ExternalLink, Activity, Briefcase, DollarSign, Clock, CheckCircle, Flame, Skull, Ghost, Zap, Wifi } from 'lucide-react';
+import { Target, Terminal, Shield, PlusCircle, ExternalLink, Activity, Briefcase, Clock, Skull, Ghost, Zap, Wifi } from 'lucide-react';
 
 // --- DATA STRUCTURES ---
 interface Bounty {
@@ -78,7 +78,6 @@ function App() {
   const [bounties, setBounties] = useState<Bounty[]>(STATIC_BOUNTIES);
   const [loading, setLoading] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('OFFLINE / SIMULATION');
-  const [activeTab] = useState<'COMMAND' | 'ARMORY'>('COMMAND');
 
   const API_URL = 'https://web-production-b9691.up.railway.app';
   const STRIPE_POST_LINK = "https://buy.stripe.com/7sYfZgdJP9Kdd4i95v1Fe08"; 
@@ -89,7 +88,6 @@ function App() {
         setLoading(true);
         try {
             console.log(`📡 CONNECTING TO: ${API_URL}`);
-            // 1. Try to fetch from backend
             const response = await fetch(`${API_URL}/latest_deals.json`);
             if (!response.ok) throw new Error('Network response was not ok');
             
@@ -99,13 +97,11 @@ function App() {
                 setBounties(data);
                 setConnectionStatus('CONNECTED // LIVE FEED');
             } else {
-                // Backend is empty? Use static.
                 setConnectionStatus('CONNECTED // NO SIGNALS (USING SIMULATION)');
             }
         } catch (error) {
             console.warn("⚠️ BACKEND SILENT. USING FALLBACK PROTOCOL.", error);
             setConnectionStatus('BACKEND OFFLINE // SIMULATION MODE');
-            // Shuffle static data so it feels fresh
             setBounties([...STATIC_BOUNTIES].sort(() => Math.random() - 0.5));
         } finally {
             setLoading(false);
@@ -115,7 +111,6 @@ function App() {
   }, []);
 
   const refreshFeed = () => {
-      // Just re-trigger simulation for now if backend is dead
       setLoading(true);
       setTimeout(() => {
           setBounties([...STATIC_BOUNTIES].sort(() => Math.random() - 0.5));
